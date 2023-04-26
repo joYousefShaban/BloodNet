@@ -1,23 +1,10 @@
 var builder = WebApplication.CreateBuilder(args);
+var startup = new Startup(builder.Configuration); // My custom startup class.
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+startup.ConfigureServices(builder.Services); // Add services to the container.
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-}
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+startup.Configure(app, app.Environment); // Configure the HTTP request pipeline.
 
 app.Run();
