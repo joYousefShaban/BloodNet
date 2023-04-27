@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Net;
 using System.Text;
 
 public class Startup
@@ -17,6 +18,15 @@ public class Startup
     // This method gets called by the runtime. Use this method to add serices to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+
+        //Session
+        services.AddSession(options =>
+        {
+            options.IdleTimeout=TimeSpan.FromHours(1);
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
+        });
+
         services.AddControllersWithViews();
         //Add DBContext
         services.AddDbContext<BloodNetContext>(options =>
@@ -24,7 +34,8 @@ public class Startup
         services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
             .AddEntityFrameworkStores<BloodNetContext>().AddDefaultTokenProviders();
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options => {
+            .AddJwtBearer(options =>
+            {
                 options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -35,7 +46,7 @@ public class Startup
                     ValidAudience = Configuration["Jwt:Issuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                 };
-        });
+            });
         //Razor Pages
         services.AddRazorPages();
     }
@@ -49,6 +60,34 @@ public class Startup
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
+        
+        app.UseSession();
+        //Middle ware process request
+        app.Use(async (context, next) => {
+            var token = context.Session.GetString("Token");
+            if(!string.IsNullOrEmpty(token)) //if in session has a token
+            {
+                //Get session and append to request
+                context.Request.Headers.Add("Authorization","Bearer "+token);
+            }
+            await next();
+        });
+
+        //Middleware process http status code
+        app.UseStatusCodePages(async context =>
+        {
+            var response = context.HttpContext.Response;
+            var request = context.HttpContext.Request;
+
+            if (!request.Path.Value.Contains("/api")) //Only apply process for API process
+            {
+                if (response.StatusCode == (int)HttpStatusCode.Unauthorized ||
+                response.StatusCode == (int)HttpStatusCode.Forbidden)
+                {
+                    response.Redirect("/Identity/Account/Login");
+                }
+            }
+        });
 
         app.UseHttpsRedirection();
         app.UseStaticFiles();

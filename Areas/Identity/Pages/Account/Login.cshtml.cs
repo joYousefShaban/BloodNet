@@ -15,6 +15,11 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNet.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace BloodNet.Areas.Identity.Pages.Account
 {
@@ -22,11 +27,14 @@ namespace BloodNet.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly IConfiguration _config;
 
-        public LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> logger)
+
+        public LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> logger, IConfiguration config)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _config = config;
         }
 
         /// <summary>
@@ -115,6 +123,28 @@ namespace BloodNet.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+
+                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:key"]));
+                    var credentitials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                    var claimsIdentity = new[]
+                    {
+                new Claim("Name",Input.Email),
+                new Claim("TestClaim","Anything you want (Token is valid)")
+            };
+
+
+                    var token = new JwtSecurityToken(_config["Jwt:Issuer"],
+                        _config["Jwt:Issuer"],
+                        claims: claimsIdentity,
+                        expires: DateTime.Now.AddHours(1),
+                        signingCredentials: credentitials);
+
+                    var generateToken= new JwtSecurityTokenHandler().WriteToken(token);
+                    HttpContext.Session.SetString("Token", generateToken);
+
+
+
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
