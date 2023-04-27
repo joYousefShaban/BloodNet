@@ -39,7 +39,7 @@ namespace BloodNet.Controllers
             if (user != null)
             {
                 var tokenString = GenerateJSONWebToken(user);
-                result = Ok(new { toekn = tokenString });
+                result = Ok(new { token = tokenString });
             }
             return result;
         }
