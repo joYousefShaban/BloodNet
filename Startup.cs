@@ -98,11 +98,12 @@ public class Startup
 
         app.UseAuthorization();
 
+        //this is the default page for the website
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=AdminHome}/{action=Index}/{id?}");
             endpoints.MapRazorPages();
         });
     }

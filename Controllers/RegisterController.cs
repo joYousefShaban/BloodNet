@@ -42,7 +42,7 @@ namespace BloodNet.Controllers
                 var createUserResult = await _userManager.CreateAsync(user, model.Password);
                 if (createUserResult.Succeeded)
                 {
-                    return Ok();
+                    return StatusCode(201);
                 }
                 else
                 {
