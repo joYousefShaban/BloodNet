@@ -112,7 +112,8 @@ namespace BloodNet.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
+            //change routing through here.
+            returnUrl ??= Url.Content("~/AdminHome");
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 

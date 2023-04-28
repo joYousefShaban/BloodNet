@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using BloodNet.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 
-namespace BloodNet.Controllers
+namespace BloodNet.Controllers.Account
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -2,6 +2,7 @@
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
+    Layout = null;
 }
 
 <!DOCTYPE html>
@@ -73,9 +74,6 @@
                                 </a>
                             </form>
                             <hr>
-                            <div class="text-center">
-                                <a class="small" asp-page="./ForgotPassword">Forgot Password?</a>
-                            </div>
                             <div class="text-center">
                                 <a class="small" asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Already have an account? Login!</a>
                             </div>

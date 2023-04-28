@@ -11,7 +11,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace BloodNet.Controllers
+namespace BloodNet.Controllers.Account
 {
     [Route("api/[controller]")]
     [ApiController]

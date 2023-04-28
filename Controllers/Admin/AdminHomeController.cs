@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BloodNet.Controllers
+namespace BloodNet.Controllers.Admin
 {
     public class AdminHomeController : Controller
     {
