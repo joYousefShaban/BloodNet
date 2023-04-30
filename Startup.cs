@@ -1,4 +1,5 @@
-﻿using BloodNet.Models;
+﻿using BloodNet.Controllers.Account;
+using BloodNet.Models;
 using BloodNet.Models.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -22,7 +23,7 @@ public class Startup
         //Session
         services.AddSession(options =>
         {
-            options.IdleTimeout=TimeSpan.FromHours(1);
+            options.IdleTimeout = TimeSpan.FromHours(1);
             options.Cookie.HttpOnly = true;
             options.Cookie.IsEssential = true;
         });
@@ -31,8 +32,12 @@ public class Startup
         //Add DBContext
         services.AddDbContext<BloodNetContext>(options =>
         options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
+
         services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
+            .AddRoles<Role>()
             .AddEntityFrameworkStores<BloodNetContext>().AddDefaultTokenProviders();
+        services.AddScoped<RegisterController>();
+
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -44,7 +49,7 @@ public class Startup
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = Configuration["Jwt:Issuer"],
                     ValidAudience = Configuration["Jwt:Issuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"] ?? string.Empty))
                 };
             });
         //Razor Pages
@@ -60,15 +65,16 @@ public class Startup
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
-        
+
         app.UseSession();
         //Middle ware process request
-        app.Use(async (context, next) => {
+        app.Use(async (context, next) =>
+        {
             var token = context.Session.GetString("Token");
-            if(!string.IsNullOrEmpty(token)) //if in session has a token
+            if (!string.IsNullOrEmpty(token)) //if in session has a token
             {
                 //Get session and append to request
-                context.Request.Headers.Add("Authorization","Bearer "+token);
+                context.Request.Headers.Add("Authorization", "Bearer " + token);
             }
             await next();
         });

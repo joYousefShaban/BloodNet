@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Data;
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -46,15 +47,15 @@ namespace BloodNet.Controllers.Account
 
         private object GenerateJSONWebToken(User user)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:key"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:key"] ?? string.Empty));
             var credentitials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claimsIdentity = new[]
             {
-                new Claim("Name",user.Email),
-                new Claim("TestClaim","Anything you want (Token is valid)")
+                new Claim("Name",user.Email?? string.Empty),
+                new Claim(ClaimTypes.Role, "Admin"),
+                new Claim("TestClaim","Anything you want"),
             };
-
 
             var token = new JwtSecurityToken(_config["Jwt:Issuer"],
                 _config["Jwt:Issuer"],
@@ -66,7 +67,8 @@ namespace BloodNet.Controllers.Account
 
         }
 
-        private async Task<User> AuthenticateUser(UserLoginModel login)
+        /*[Authorize(Roles = "Admin")]*/
+        private async Task<User?> AuthenticateUser(UserLoginModel login)
         {
             var result = await _signInManager.PasswordSignInAsync(login.Email, login.Password, false, lockoutOnFailure: false);
             if (result.Succeeded)

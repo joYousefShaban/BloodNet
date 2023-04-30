@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using BloodNet.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
+using System.Diagnostics;
 
 namespace BloodNet.Controllers.Account
 {
@@ -40,6 +41,9 @@ namespace BloodNet.Controllers.Account
             if (userWithEmail == null)
             {
                 var createUserResult = await _userManager.CreateAsync(user, model.Password);
+
+                //add a user to a role
+                await _userManager.AddToRoleAsync(user, "Admin");
                 if (createUserResult.Succeeded)
                 {
                     return StatusCode(201);

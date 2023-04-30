@@ -9,7 +9,7 @@ namespace BloodNet.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult GetUserInfo()
         {
@@ -17,8 +17,8 @@ namespace BloodNet.Controllers
             var identity = HttpContext.User.Claims as IEnumerable<Claim>;
             if (identity.Count() > 0)
             {
-                var name = identity.FirstOrDefault(x => x.Type.Equals("Name")).Value;
-                var anything = identity.FirstOrDefault(x => x.Type.Equals("TestClaim")).Value;
+                var name = identity.FirstOrDefault(x => x.Type.Equals("Name"))?.Value ?? string.Empty;
+                var anything = identity.FirstOrDefault(x => x.Type.Equals("TestClaim"))?.Value ?? string.Empty;
 
                 result = Ok(new { name = name, text = anything });
             }

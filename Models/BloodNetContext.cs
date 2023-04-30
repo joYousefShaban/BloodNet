@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BloodNet.Models;
 
-public partial class BloodNetContext : IdentityDbContext<User,Role,Guid>
+public partial class BloodNetContext : IdentityDbContext<User, Role, Guid>
 {
     public BloodNetContext()
     {

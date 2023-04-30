@@ -2,8 +2,7 @@
 
 namespace BloodNet.Models.Auth
 {
-    public class User:IdentityUser<Guid>
+    public class User : IdentityUser<Guid>
     {
-
     }
 }
