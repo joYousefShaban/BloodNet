@@ -1,6 +1,7 @@
 ﻿using BloodNet.Controllers.Account;
 using BloodNet.Models;
 using BloodNet.Models.Auth;
+using BloodNet.Services.EmailService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -28,12 +29,14 @@ public class Startup
             options.Cookie.IsEssential = true;
         });
 
+        services.AddScoped<IEmailService,EmailService>();
+
         services.AddControllersWithViews();
         //Add DBContext
         services.AddDbContext<BloodNetContext>(options =>
         options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
 
-        services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
+        services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddRoles<Role>()
             .AddEntityFrameworkStores<BloodNetContext>().AddDefaultTokenProviders();
         services.AddScoped<RegisterController>();

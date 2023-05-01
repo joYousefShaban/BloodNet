@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using BloodNet.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using System.Diagnostics;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Text;
+using BloodNet.Services.EmailService;
 
 namespace BloodNet.Controllers.Account
 {
@@ -17,13 +20,15 @@ namespace BloodNet.Controllers.Account
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly BloodNetContext _context;
+        private readonly IEmailService _emailService;
 
-        public RegisterController(IConfiguration config, SignInManager<User> signInManager, UserManager<User> userManager, BloodNetContext context)
+        public RegisterController(IConfiguration config, SignInManager<User> signInManager, UserManager<User> userManager, BloodNetContext context, IEmailService emailService)
         {
             _config = config;
             _signInManager = signInManager;
             _userManager = userManager;
             _context = context;
+            _emailService = emailService;
         }
 
         [AllowAnonymous]
@@ -46,6 +51,19 @@ namespace BloodNet.Controllers.Account
                 await _userManager.AddToRoleAsync(user, "Admin");
                 if (createUserResult.Succeeded)
                 {
+                    var returnUrl = Url.Content("~/");
+                    var userId = await _userManager.GetUserIdAsync(user);
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    var callbackUrl = Url.Page(
+                        "/Account/ConfirmEmail",
+                        pageHandler: null,
+                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                        protocol: Request.Scheme);
+
+                    _emailService.SendRegisterEmail(new EmailDTO { To = model.Email, callbackUrl = callbackUrl });
+
+
                     return StatusCode(201);
                 }
                 else

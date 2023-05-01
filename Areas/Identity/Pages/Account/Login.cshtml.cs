@@ -133,10 +133,10 @@ namespace BloodNet.Areas.Identity.Pages.Account
 
                         var claimsIdentity = new[]
                         {
-                        new Claim("Name",Input.Email),
-                        new Claim(ClaimTypes.Role, "Admin"),
-                        new Claim("TestClaim","Anything you want")
-                    };
+                            new Claim("Name",Input.Email),
+                            new Claim(ClaimTypes.Role, "Admin"),
+                            new Claim("TestClaim","Anything you want")
+                        };
 
 
                         var token = new JwtSecurityToken(_config["Jwt:Issuer"],
