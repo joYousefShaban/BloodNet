@@ -7,8 +7,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using BloodNet.Models.Auth;
 using Microsoft.AspNetCore.Authorization;
+using BloodNet.Models.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -21,13 +21,11 @@ namespace BloodNet.Areas.Identity.Pages.Account
     {
         private readonly UserManager<User> _userManager;
         private readonly IEmailSender _emailSender;
-        private readonly IConfiguration _config;
 
-        public ForgotPasswordModel(UserManager<User> userManager, IEmailSender emailSender, IConfiguration config)
+        public ForgotPasswordModel(UserManager<User> userManager, IEmailSender emailSender)
         {
             _userManager = userManager;
             _emailSender = emailSender;
-            _config = config;
         }
 
         /// <summary>
@@ -80,6 +78,7 @@ namespace BloodNet.Areas.Identity.Pages.Account
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }
+
             return Page();
         }
     }
