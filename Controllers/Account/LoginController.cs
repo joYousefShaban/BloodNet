@@ -1,5 +1,4 @@
-﻿using BloodNet.Models;
-using BloodNet.Models.Auth;
+﻿using BloodNet.Models.Auth;
 using BloodNet.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

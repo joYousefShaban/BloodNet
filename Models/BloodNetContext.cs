@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using BloodNet.Models.Auth;
+﻿using BloodNet.Models.Auth;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

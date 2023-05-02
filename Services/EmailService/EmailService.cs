@@ -1,9 +1,9 @@
 ﻿using BloodNet.Models;
-using MimeKit.Text;
-using MimeKit;
 using MailKit.Net.Smtp;
-using System.Text.Encodings.Web;
+using MimeKit;
+using MimeKit.Text;
 using System.Diagnostics;
+using System.Text.Encodings.Web;
 
 namespace BloodNet.Services.EmailService
 {

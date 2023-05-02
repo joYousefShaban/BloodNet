@@ -1,14 +1,12 @@
-﻿using BloodNet.Models.Auth;
-using BloodNet.Models;
-using Microsoft.AspNetCore.Http;
+﻿using BloodNet.Models;
+using BloodNet.Models.Auth;
+using BloodNet.Models.ViewModel;
+using BloodNet.Services.EmailService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using BloodNet.Models.ViewModel;
-using Microsoft.AspNetCore.Authorization;
-using System.Diagnostics;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
-using BloodNet.Services.EmailService;
 
 namespace BloodNet.Controllers.Account
 {
