@@ -29,7 +29,7 @@ public class Startup
             options.Cookie.IsEssential = true;
         });
 
-        services.AddScoped<IEmailService,EmailService>();
+        services.AddScoped<IEmailService, EmailService>();
 
         services.AddControllersWithViews();
         //Add DBContext
@@ -88,14 +88,16 @@ public class Startup
             var response = context.HttpContext.Response;
             var request = context.HttpContext.Request;
 
-            if (!request.Path.Value.Contains("/api")) //Only apply process for API process
+            if (request.Path.Value != null && !request.Path.Value.Contains("/api")) //Only apply process for non-API requests
             {
                 if (response.StatusCode == (int)HttpStatusCode.Unauthorized ||
-                response.StatusCode == (int)HttpStatusCode.Forbidden)
+                    response.StatusCode == (int)HttpStatusCode.Forbidden)
                 {
                     response.Redirect("/Identity/Account/Login");
                 }
             }
+
+            await Task.CompletedTask; //Add await keyword and return Task object
         });
 
         app.UseHttpsRedirection();
@@ -112,7 +114,7 @@ public class Startup
         {
             endpoints.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=AdminHome}/{action=Index}/{id?}");
+                pattern: "{controller=Home}/{action=Index}/{id?}");
             endpoints.MapRazorPages();
         });
     }

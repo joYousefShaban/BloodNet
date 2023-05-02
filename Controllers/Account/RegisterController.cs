@@ -16,18 +16,12 @@ namespace BloodNet.Controllers.Account
     [ApiController]
     public class RegisterController : ControllerBase
     {
-        private readonly IConfiguration _config;
-        private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
-        private readonly BloodNetContext _context;
         private readonly IEmailService _emailService;
 
-        public RegisterController(IConfiguration config, SignInManager<User> signInManager, UserManager<User> userManager, BloodNetContext context, IEmailService emailService)
+        public RegisterController(UserManager<User> userManager, IEmailService emailService)
         {
-            _config = config;
-            _signInManager = signInManager;
             _userManager = userManager;
-            _context = context;
             _emailService = emailService;
         }
 
@@ -35,7 +29,6 @@ namespace BloodNet.Controllers.Account
         [HttpPost]
         public async Task<IActionResult> Register([FromBody] UserLoginModel model)
         {
-            IActionResult result = Unauthorized();
             var user = new User
             {
                 UserName = model.Email,
@@ -58,10 +51,10 @@ namespace BloodNet.Controllers.Account
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
+                        values: new { area = "Identity", userId, code, returnUrl },
+                        protocol: Request.Scheme) ?? "";
 
-                    _emailService.SendRegisterEmail(new EmailDTO { To = model.Email, callbackUrl = callbackUrl });
+                    _emailService.SendRegisterEmail(new EmailDTO { To = model.Email, CallbackUrl = callbackUrl });
 
 
                     return StatusCode(201);

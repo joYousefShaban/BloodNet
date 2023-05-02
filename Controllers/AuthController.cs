@@ -15,12 +15,12 @@ namespace BloodNet.Controllers
         {
             IActionResult result = NotFound();
             var identity = HttpContext.User.Claims as IEnumerable<Claim>;
-            if (identity.Count() > 0)
+            if (identity.Any())
             {
                 var name = identity.FirstOrDefault(x => x.Type.Equals("Name"))?.Value ?? string.Empty;
                 var anything = identity.FirstOrDefault(x => x.Type.Equals("TestClaim"))?.Value ?? string.Empty;
 
-                result = Ok(new { name = name, text = anything });
+                result = Ok(new { name, text = anything });
             }
             return result;
         }

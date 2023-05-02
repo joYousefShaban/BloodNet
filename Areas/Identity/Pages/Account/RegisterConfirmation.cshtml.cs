@@ -19,12 +19,10 @@ namespace BloodNet.Areas.Identity.Pages.Account
     public class RegisterConfirmationModel : PageModel
     {
         private readonly UserManager<User> _userManager;
-        private readonly IEmailSender _emailSender;
 
-        public RegisterConfirmationModel(UserManager<User> userManager, IEmailSender emailSender)
+        public RegisterConfirmationModel(UserManager<User> userManager)
         {
             _userManager = userManager;
-            _emailSender = emailSender;
         }
 
         /// <summary>
@@ -51,7 +49,7 @@ namespace BloodNet.Areas.Identity.Pages.Account
             {
                 return RedirectToPage("/Index");
             }
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl ??= Url.Content("~/");
 
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
@@ -68,7 +66,7 @@ namespace BloodNet.Areas.Identity.Pages.Account
             EmailConfirmationUrl = Url.Page(
                 "/Account/ConfirmEmail",
                 pageHandler: null,
-                values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                values: new { area = "Identity", userId, code, returnUrl },
                 protocol: Request.Scheme);
 
             return Page();

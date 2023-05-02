@@ -13,7 +13,7 @@ namespace BloodNet.Migrations
 {
     [DbContext(typeof(BloodNetContext))]
     [Migration("20230426164817_init")]
-    partial class init
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

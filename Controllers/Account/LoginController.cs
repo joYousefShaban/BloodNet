@@ -2,12 +2,9 @@
 using BloodNet.Models.Auth;
 using BloodNet.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using System.Data;
-using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -21,14 +18,12 @@ namespace BloodNet.Controllers.Account
         private readonly IConfiguration _config;
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
-        private readonly BloodNetContext _context;
 
-        public LoginController(IConfiguration config, SignInManager<User> signInManager, UserManager<User> userManager, BloodNetContext context)
+        public LoginController(IConfiguration config, SignInManager<User> signInManager, UserManager<User> userManager)
         {
             _config = config;
             _signInManager = signInManager;
             _userManager = userManager;
-            _context = context;
         }
 
         [AllowAnonymous]

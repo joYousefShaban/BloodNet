@@ -35,10 +35,12 @@ using (var scope = app.Services.CreateScope())
 
     if (await userManager.FindByEmailAsync(email) == null)
     {
-        var user = new User();
-        user.UserName = email;
-        user.Email = email;
-        user.EmailConfirmed = true;
+        var user = new User
+        {
+            UserName = email,
+            Email = email,
+            EmailConfirmed = true
+        };
 
         await userManager.CreateAsync(user, password);
         await userManager.AddToRoleAsync(user, "Admin");

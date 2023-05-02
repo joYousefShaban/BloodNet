@@ -22,7 +22,7 @@ namespace BloodNet.Services.EmailService
             email.From.Add(MailboxAddress.Parse(_config.GetSection("EmailUsername").Value));
             email.To.Add(MailboxAddress.Parse(request.To));
             email.Subject = "BloodNet - Email Confirmation";
-            var messageBody = $"<h1>Please confirm your account by <a href='{HtmlEncoder.Default.Encode(request.callbackUrl)}'>clicking here</a>.</h1>";
+            var messageBody = $"<h1>Please confirm your account by <a href='{HtmlEncoder.Default.Encode(request.CallbackUrl)}'>clicking here</a>.</h1>";
             Debug.WriteLine(messageBody);
             email.Body = new TextPart(TextFormat.Html) { Text = messageBody };
 
